@@ -4,9 +4,11 @@
 
     <row :gutter="12">
       <column>Countries: </column>
-      <column><v-select :options="countries"></v-select></column>
+      <column
+        ><v-select :options="countries" @input="changeCamps"></v-select
+      ></column>
       <column>Camps: </column>
-      <column><v-select :options="[]"></v-select></column>
+      <column><v-select :options="camps"></v-select></column>
       <column>Schools: </column>
       <column><v-select :options="[]"></v-select></column>
     </row>
@@ -19,52 +21,58 @@
         </column>
       </row>
     </div>
-
-
   </div>
 </template>
 
 <script>
-  import LineChart from '../components/LineChart.js'
-  import {getCountries, getLessonsByYear} from '../data/data-provider.js'
+import LineChart from "../components/LineChart.js";
+import {
+  getCountries,
+  getCamps,
+  getLessonsByYear
+} from "../data/data-provider.js";
 
-  export default {
-    components: {
-      LineChart
+export default {
+  components: {
+    LineChart
+  },
+  data() {
+    return {
+      chartData: {},
+      countries: [],
+      camps: []
+    };
+  },
+  mounted() {
+    this.countries = getCountries();
+    this.updateChartData("Tanzania");
+  },
+  methods: {
+    changeCamps: function(value) {
+      this.camps = getCamps(value);
+      this.updateChartData(value);
     },
-    data () {
-      return {
-        chartData: {},
-        countries: [],
-        camps: []
-      }
-    },
-    mounted () {
-      this.countries = getCountries();
-      this.updateChartData();
-    },
-    methods: {
-      updateChartData () {
-        let lessonsByYear = getLessonsByYear();
-        this.chartData = {
-          labels: lessonsByYear.years,
-          datasets: [
-            {
-              label: 'Kenya',
-              backgroundColor: 'transparent',
-              borderColor: '#EC7181',
-              data: lessonsByYear.lessons
-            }
-          ]
-        }
-      }
+    updateChartData(value) {
+      let lessonsByYear = getLessonsByYear(value);
+
+      this.chartData = {
+        labels: lessonsByYear.years,
+        datasets: [
+          {
+            label: value,
+            backgroundColor: "transparent",
+            borderColor: "#EC7181",
+            data: lessonsByYear.lessons
+          }
+        ]
+      };
     }
   }
+};
 </script>
 
 <style>
-  .chart-view {
-    margin-top: 50px;
-  }
-
+.chart-view {
+  margin-top: 50px;
+}
 </style>

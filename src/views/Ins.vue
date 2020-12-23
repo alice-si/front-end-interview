@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="contanier">
     <h1>INS Lessons</h1>
-
+    <h2>Number of lessons using INS</h2>
     <row :gutter="12">
       <column>Countries: </column>
-      <column><v-select :options="countries" v-on:change="onChange"></v-select></column>
+      <column><v-select :options="countries" v-model="selectedCountry" v-on:change="onChange"></v-select></column>
       <column>Camps: </column>
       <column><v-select :options="camps"></v-select></column>
       <column>Schools: </column>
@@ -47,7 +47,6 @@ export default {
   methods: {
     updateChartData () {
       let lessonsByYear = getLessonsByYear('Kenya')
-      console.log('Years', lessonsByYear.lessons)
       this.chartData = {
         labels: lessonsByYear.years,
         datasets: [
@@ -55,7 +54,21 @@ export default {
             label: 'Kenya',
             backgroundColor: 'transparent',
             borderColor: '#EC7181',
+            lineTension: 0,
+            pointStyle: 'circle',
+            pointRadius: 4,
+            pointBackgroundColor: '#FFF',
             data: lessonsByYear.lessons
+          },
+          {
+            label: 'Years',
+            backgroundColor: 'transparent',
+            borderColor: '#EC7181',
+            lineTension: 0,
+            pointStyle: 'circle',
+            pointRadius: 4,
+            pointBackgroundColor: '#FFF',
+            data: lessonsByYear.years
           }
         ]
       }
@@ -69,8 +82,20 @@ export default {
 </script>
 
 <style>
+  .contanier {
+    background-color: #f5f6fa;
+  }
+  .contanier h1, .contanier h2 {
+    text-align: left;
+    padding: 20px;
+    color: #a88ccc;
+  }
   .chart-view {
     margin-top: 50px;
+  }
+  input {
+    background-color: #9cd0fa !important;
+    border: none !important
   }
 
 </style>

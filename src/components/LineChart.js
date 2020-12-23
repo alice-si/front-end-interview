@@ -5,6 +5,16 @@ export default {
   extends: Line,
   mixins: [reactiveProp],
   props: ['options'],
+  options: {
+    elements: {
+      point: {
+        radius: 2
+      },
+      line: {
+        tension: 0
+      }
+    }
+  },
   mounted () {
     // this.chartData is created in the mixin.
     // If you want to pass options please create a local options object

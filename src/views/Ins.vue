@@ -4,9 +4,9 @@
 
     <row :gutter="12">
       <column>Countries: </column>
-      <column><v-select :options="countries"></v-select></column>
+      <column><v-select :options="countries" v-on:change="onChange"></v-select></column>
       <column>Camps: </column>
-      <column><v-select :options="[]"></v-select></column>
+      <column><v-select :options="camps"></v-select></column>
       <column>Schools: </column>
       <column><v-select :options="[]"></v-select></column>
     </row>
@@ -20,46 +20,52 @@
       </row>
     </div>
 
-
   </div>
 </template>
 
 <script>
-  import LineChart from '../components/LineChart.js'
-  import {getCountries, getLessonsByYear} from '../data/data-provider.js'
+import LineChart from '../components/LineChart.js'
+import { getCountries, getLessonsByYear, getCamps } from '../data/data-provider.js'
 
-  export default {
-    components: {
-      LineChart
-    },
-    data () {
-      return {
-        chartData: {},
-        countries: [],
-        camps: []
+export default {
+  components: {
+    LineChart
+  },
+  data () {
+    return {
+      chartData: {},
+      countries: [],
+      camps: [],
+      selectedCountry: ''
+    }
+  },
+  mounted () {
+    this.countries = getCountries()
+    this.camps = getCamps('Kenya')
+    this.updateChartData()
+  },
+  methods: {
+    updateChartData () {
+      let lessonsByYear = getLessonsByYear('Kenya')
+      console.log('Years', lessonsByYear.lessons)
+      this.chartData = {
+        labels: lessonsByYear.years,
+        datasets: [
+          {
+            label: 'Kenya',
+            backgroundColor: 'transparent',
+            borderColor: '#EC7181',
+            data: lessonsByYear.lessons
+          }
+        ]
       }
     },
-    mounted () {
-      this.countries = getCountries();
-      this.updateChartData();
-    },
-    methods: {
-      updateChartData () {
-        let lessonsByYear = getLessonsByYear();
-        this.chartData = {
-          labels: lessonsByYear.years,
-          datasets: [
-            {
-              label: 'Kenya',
-              backgroundColor: 'transparent',
-              borderColor: '#EC7181',
-              data: lessonsByYear.lessons
-            }
-          ]
-        }
-      }
+    onChange () {
+      console.log('hi')
+      this.camps = getCamps(this.selectedCountry)
     }
   }
+}
 </script>
 
 <style>

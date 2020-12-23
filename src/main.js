@@ -8,8 +8,6 @@ import 'vue-select/dist/vue-select.css'
 Vue.component('row', Row)
 Vue.component('column', Column)
 
-
-
 Vue.component('v-select', vSelect)
 
 Vue.config.productionTip = false

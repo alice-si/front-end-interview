@@ -12,7 +12,7 @@
     </row>
 
     <div class="chart-view">
-      <line-chart :chart-data="chartData" :height=400 :width=900></line-chart>
+      <line-chart :chart-data="chartData" :height=400 :width=900 :options="options"></line-chart>
       <row :gutter="12">
         <column :lg="4"></column>
         <column :lg="4">
@@ -35,7 +35,23 @@ export default {
     return {
       chartData: {},
       countries: [],
-      camps: []
+      camps: [],
+      options: {
+        title: {
+          display: true,
+          position: 'top',
+          text: 'Number of lessons'
+        },
+        legend: {
+          display: true,
+          position: 'right',
+          align: 'center',
+          usePointStyle: true
+        },
+        elements: {
+          radius: 5
+        }
+      }
     }
   },
   mounted () {

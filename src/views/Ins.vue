@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-container">
     <h1>INS Lessons</h1>
 
     <row :gutter="12">
@@ -12,10 +12,10 @@
     </row>
 
     <div class="chart-view">
+      <line-chart :chart-data="chartData" :height=400 :width=900></line-chart>
       <row :gutter="12">
         <column :lg="4"></column>
         <column :lg="4">
-          <line-chart :chart-data="chartData"></line-chart>
         </column>
       </row>
     </div>
@@ -52,13 +52,20 @@ export default {
             label: country,
             backgroundColor: 'transparent',
             borderColor: '#EC7181',
-            data: lessonsByYear.lessons
+            data: lessonsByYear.lessons,
+            lineTension: 0,
+            pointRadius: 4,
+            pointBorderWidth: 3,
+            pointBackgroundColor: '#fff',
+            pointHoverBackgroundColor: '#aaa',
+            pointHoverRadius: 6,
+            pointHoverBorderWidth: 3,
+            maintainAspectRatio: false
           }
         ]
       }
     },
     updatePage (country) {
-      console.log(country)
       this.camps = getCamps(country)
       this.updateChartData(country)
     }
@@ -69,6 +76,11 @@ export default {
 <style>
   .chart-view {
     margin-top: 50px;
+  }
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
 </style>

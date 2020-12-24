@@ -42,5 +42,3 @@ export function getLessonsByYear (country) {
 
   return lessons
 }
-
-console.log(getLessonsByYear('tanzania'))

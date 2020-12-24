@@ -4,9 +4,9 @@
 
     <row :gutter="12">
       <column>Countries: </column>
-      <column><v-select :options="countries"></v-select></column>
+      <column><v-select :options="countries" @input="updatePage($event)"></v-select></column>
       <column>Camps: </column>
-      <column><v-select :options="[]"></v-select></column>
+      <column><v-select :options="camps"></v-select></column>
       <column>Schools: </column>
       <column><v-select :options="[]"></v-select></column>
     </row>
@@ -20,46 +20,50 @@
       </row>
     </div>
 
-
   </div>
 </template>
 
 <script>
-  import LineChart from '../components/LineChart.js'
-  import {getCountries, getLessonsByYear} from '../data/data-provider.js'
+import LineChart from '../components/LineChart.js'
+import { getCountries, getLessonsByYear, getCamps } from '../data/data-provider.js'
 
-  export default {
-    components: {
-      LineChart
-    },
-    data () {
-      return {
-        chartData: {},
-        countries: [],
-        camps: []
+export default {
+  components: {
+    LineChart
+  },
+  data () {
+    return {
+      chartData: {},
+      countries: [],
+      camps: []
+    }
+  },
+  mounted () {
+    this.countries = getCountries()
+    this.updateChartData()
+  },
+  methods: {
+    updateChartData (country) {
+      let lessonsByYear = getLessonsByYear(country)
+      this.chartData = {
+        labels: lessonsByYear.years,
+        datasets: [
+          {
+            label: country,
+            backgroundColor: 'transparent',
+            borderColor: '#EC7181',
+            data: lessonsByYear.lessons
+          }
+        ]
       }
     },
-    mounted () {
-      this.countries = getCountries();
-      this.updateChartData();
-    },
-    methods: {
-      updateChartData () {
-        let lessonsByYear = getLessonsByYear();
-        this.chartData = {
-          labels: lessonsByYear.years,
-          datasets: [
-            {
-              label: 'Kenya',
-              backgroundColor: 'transparent',
-              borderColor: '#EC7181',
-              data: lessonsByYear.lessons
-            }
-          ]
-        }
-      }
+    updatePage (country) {
+      console.log(country)
+      this.camps = getCamps(country)
+      this.updateChartData(country)
     }
   }
+}
 </script>
 
 <style>

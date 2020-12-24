@@ -4,20 +4,22 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/ins">INS</router-link>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <style>
+html {
+  background-color: #f4f0ff;
+  padding: 20px;
+}
+
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-#nav {
-  padding: 30px;
 }
 
 #nav a {

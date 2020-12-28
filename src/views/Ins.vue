@@ -15,56 +15,61 @@
       <row :gutter="12">
         <column :lg="4"></column>
         <column :lg="4">
-          <line-chart :chart-data="chartData"></line-chart>
+          <line-chart
+            :chart-data="chartData"
+            :options="chartOptions"
+          ></line-chart>
         </column>
       </row>
     </div>
-
-
   </div>
 </template>
 
 <script>
-  import LineChart from '../components/LineChart.js'
-  import {getCountries, getLessonsByYear} from '../data/data-provider.js'
+import LineChart from "../components/LineChart.js";
+import {
+  getCountries,
+  getLessonsByYear,
+  getCamps,
+} from "../data/data-provider.js";
 
-  export default {
-    components: {
-      LineChart
+export default {
+  components: {
+    LineChart,
+  },
+  data() {
+    return {
+      chartData: {},
+      countries: [],
+      camps: [],
+    };
+  },
+  mounted() {
+    this.countries = getCountries();
+    this.camps = getCamps(this.countries);
+    this.updateChartData();
+  },
+  methods: {
+    updateChartData() {
+      let lessonsByYear = getLessonsByYear();
+     ç this.chartData = {
+        labels: lessonsByYear.years,
+        datasets: [
+          {
+            label: "Kenya",
+            backgroundColor: "transparent",
+            borderColor: "#EC7181",
+            data: lessonsByYear.lessons,
+          },
+        ],
+      };
     },
-    data () {
-      return {
-        chartData: {},
-        countries: [],
-        camps: []
-      }
-    },
-    mounted () {
-      this.countries = getCountries();
-      this.updateChartData();
-    },
-    methods: {
-      updateChartData () {
-        let lessonsByYear = getLessonsByYear();
-        this.chartData = {
-          labels: lessonsByYear.years,
-          datasets: [
-            {
-              label: 'Kenya',
-              backgroundColor: 'transparent',
-              borderColor: '#EC7181',
-              data: lessonsByYear.lessons
-            }
-          ]
-        }
-      }
-    }
-  }
+  },
+};
 </script>
 
 <style>
-  .chart-view {
-    margin-top: 50px;
-  }
-
+.chart-view {
+  margin-top: 50px;
+}
 </style>

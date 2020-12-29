@@ -1,22 +1,50 @@
 const data = require('./ins-data.json')
+const _ = require('lodash')
 
-//TODO: Fill with countries taken from the data object
-export function getCountries() {
-  //Dummy answer
-  return ['Kenya', 'Tanzania']
+
+//create object that is grouped by country and filtered for the following functions 
+const groupedByCountry = _(data)
+.groupBy("country")
+//sets countries as key 
+.mapValues(countries => ({
+  //flattens camp values into unique array
+  camps: _(countries)
+    .flatMap("camp")
+    .uniq()
+    .value(),
+    //filters and adds the lessons by year
+  lessons: _(countries)
+    .filter({ country: countries[0].country })
+    .groupBy("year")
+    .map(byYear => _(byYear).sumBy("lessons"))
+    .value(),
+    //flattens year values into a unique array
+  years: _(countries)
+    .flatMap("year")
+    .uniq()
+    .value(),
+}))
+.value();
+
+  
+
+
+//gets countries which are the keys of the filtered data 
+export function getCountries () {
+return Object.keys(groupedByCountry)
+
+ }
+    
+//gets camps from the filtered data 
+export function getCamps (country) {  
+return groupedByCountry[country].camps
 }
 
-//TODO: Fill with camps taken from the data object filtered by country
-export function getCamps(country) {
-  //Dummy answer
-  return ['Kakuma', 'Omaka']
-}
-
-//TODO: Fill with total lessons taken from the data object filtered by country
-export function getLessonsByYear(country) {
-  //Dummy answer
+//returns lessons and years from the filtered data 
+export function getLessonsByYear (country) {
   return {
-    years: ['2018', '2019', '2020'],
-    lessons: [100, 150, 130]
+    years: groupedByCountry[country].years,
+    lessons: groupedByCountry[country].lessons
   }
 }
+

@@ -32,6 +32,7 @@ const groupedByCountry = _(data)
 //gets countries which are the keys of the filtered data 
 export function getCountries () {
 return Object.keys(groupedByCountry)
+
  }
     
 //gets camps from the filtered data 

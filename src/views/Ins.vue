@@ -77,7 +77,7 @@ export default {
     this.getAverage()
   },
   methods: {
-    updateChart: function (country) {
+    updateChart(country) {
       this.camps = getCamps(country);
       this.updateChartData(country);
       this.currentCountry = country;

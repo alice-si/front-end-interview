@@ -13,18 +13,16 @@
     </row>
  <row :gutter="12">
       <column :lg="8" xs-pull-12>
-        <h3 style="float: left">No of lessons</h3>
+        <h3>No of lessons</h3>
         <line-chart :chart-data="chartData" :options="options"></line-chart>
       </column>
       <column :lg="4" xs-push-12>
         <div class="legend">
         <div class="flex">
-          <h2> {{ totalLessons }} lessons</h2>
-          <p>in {{ currentCountry }}</p>
+          <h1> {{ totalLessons }} <span class="total-lessons"> total lessons </span> <br/> <span class="legend-description">in {{ currentCountry }}</span></h1>
         </div>
         <div class="flex">
-          <h1>{{ arrow }} {{ growthRate }}%</h1>
-          <p>Last 12 Months</p>
+          <h1> {{ growthRate }}% <br/> <span class="legend-description">Last 12 Months</span></h1>
         </div>
         </div>
       </column>
@@ -49,6 +47,8 @@ export default {
       chartData: {},
       countries: [],
       camps: [],
+      currentCountry: "",
+      totalLessons: "",
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -57,8 +57,8 @@ export default {
             {
               ticks: {
                 min: 0,
-                max: 250,
-                stepSize: 50,
+                max: 100,
+                stepSize: 25,
                 reverse: false,
                 beginAtZero: true,
               },
@@ -66,17 +66,15 @@ export default {
           ],
         },
       },
-      currentCountry: "",
-      totalLessons: "",
-      arrow: "",
-      growthRate: "",
     };
   },
   mounted() {
     this.countries = getCountries();
-    this.updateChart("Kenya");
+    let initialCountry = 'Tanzania';
+    this.updateChart(initialCountry);
     this.getTotalLessons();
     this.getGrowthRate();
+    this.getAverage()
   },
   methods: {
     updateChart: function (country) {
@@ -85,6 +83,7 @@ export default {
       this.currentCountry = country;
       this.getTotalLessons(country);
       this.getGrowthRate(country);
+      this.getAverage(country);
     },
     updateChartData(country) {
       let lessonsByYear = getLessonsByYear(country);
@@ -108,18 +107,29 @@ export default {
         ],
       };
     },
+
+    //calculates total lessons in the selected country
     getTotalLessons(country) {
       let lessonsByYear = getLessonsByYear(country);
-      if (lessonsByYear.lessons.length > 0) {
         this.totalLessons = lessonsByYear.lessons.reduce(
           (prev, curr) => prev + curr
-        )};
+        )
         },
+
+    //calculates average to dynamically update y axis based on data 
+    getAverage(country) {
+      let lessonsByYear = getLessonsByYear(country)
+      let average = this.totalLessons/lessonsByYear.lessons.length;
+      this.average = average.toFixed(0);
+        },
+
+    //compares past year's lesson sum to current year's
    getGrowthRate(country) {
-         let lessonsByYear = getLessonsByYear(country);
-        const recentYears = lessonsByYear.lessons.slice(-2);
-        const growthRate = (recentYears[1] / recentYears[0] - 1) * 100;
-        this.growthRate = growthRate.toFixed(0);}
+        let lessonsByYear = getLessonsByYear(country);
+        const currentLesson = lessonsByYear.lessons.length -1;
+        const growthRate = (lessonsByYear.lessons[currentLesson] / lessonsByYear.lessons[currentLesson-1] - 1) * 100;
+        this.growthRate = growthRate.toFixed(0);
+        }
   },
 };
 </script>
@@ -132,22 +142,37 @@ export default {
 
 .container {
   align-items: center;
+  font-family: Helvetica;
   display: flex;
   width: 80vw;
   padding: 20px;
 }
 
-
+//legend styles 
 .legend {
   display: flex;
-  align-items: center;
-    justify-content: space-between;
+  justify-content: space-between;
+}
+
+h3 {
+  align-self: flex-start;
+  display: flex;
+}
+
+.total-lessons {
+  font-size: 1.5rem;
+}
+
+.legend-description {
+  font-size: .9rem;
+  font-weight: 400;
+  white-space: nowrap;
 }
 
 .flex {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  padding: 10px;
 }
 </style>
